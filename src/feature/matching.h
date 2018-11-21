@@ -170,7 +170,7 @@ namespace internal {
 struct FeatureMatcherData {
   image_t image_id1 = kInvalidImageId;
   image_t image_id2 = kInvalidImageId;
-  FeatureMatches matches;
+  FeatureMatches matches;  //一对图像的所有特征匹配结果
   TwoViewGeometry two_view_geometry;
 };
 

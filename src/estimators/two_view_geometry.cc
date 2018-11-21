@@ -137,7 +137,7 @@ void TwoViewGeometry::EstimateMultiple(
       break;
     }
 
-    if (options.multiple_ignore_watermark) {
+    if (options.multiple_ignore_watermark) { //multiple_ignore_watermark为true，则不加入水印类型
       if (two_view_geometry.config != ConfigurationType::WATERMARK) {
         two_view_geometries.push_back(two_view_geometry);
       }
@@ -146,7 +146,7 @@ void TwoViewGeometry::EstimateMultiple(
     }
 
     remaining_matches = ExtractOutlierMatches(remaining_matches,
-                                              two_view_geometry.inlier_matches);
+                                              two_view_geometry.inlier_matches);//在剩余的点中去掉内点
   }
 
   if (two_view_geometries.empty()) {
@@ -267,7 +267,7 @@ void TwoViewGeometry::EstimateCalibrated(
   E = E_report.model;
 
   LORANSAC<FundamentalMatrixSevenPointEstimator,
-           FundamentalMatrixEightPointEstimator>
+           FundamentalMatrixEightPointEstimator>//Estimator, LocalEstimator分别为7点和8点
       F_ransac(options.ransac_options);
   const auto F_report = F_ransac.Estimate(matched_points1, matched_points2);
   F = F_report.model;

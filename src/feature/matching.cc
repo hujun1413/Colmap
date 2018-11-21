@@ -575,7 +575,7 @@ void TwoViewGeometryVerifier::Run() {
     if (input_job.IsValid()) {
       auto data = input_job.Data();
 
-      if (data.matches.size() < static_cast<size_t>(options_.min_num_inliers)) {
+      if (data.matches.size() < static_cast<size_t>(options_.min_num_inliers)) {//匹配数小于最少内点数，直接输出到output_queue，不进行几何验证
         CHECK(output_queue_->Push(data));
         continue;
       }
@@ -589,7 +589,7 @@ void TwoViewGeometryVerifier::Run() {
       const auto points1 = FeatureKeypointsToPointsVector(keypoints1);
       const auto points2 = FeatureKeypointsToPointsVector(keypoints2);
 
-      if (options_.multiple_models) {
+      if (options_.multiple_models) {//如果有multiple_models，则进行multiple_models的双视几何验证
         data.two_view_geometry.EstimateMultiple(camera1, points1, camera2,
                                                 points2, data.matches,
                                                 two_view_geometry_options_);
@@ -625,7 +625,7 @@ SiftFeatureMatcher::SiftFeatureMatcher(const SiftMatchingOptions& options,
   }
 #endif  // CUDA_ENABLED
 
-  if (options_.use_gpu) {
+  if (options_.use_gpu) { //选择是否使用GPU进行特征提取
     auto gpu_options = options_;
     matchers_.reserve(gpu_indices.size());
     for (const auto& gpu_index : gpu_indices) {
@@ -642,7 +642,7 @@ SiftFeatureMatcher::SiftFeatureMatcher(const SiftMatchingOptions& options,
   }
 
   verifiers_.reserve(num_threads);
-  if (options_.guided_matching) {
+  if (options_.guided_matching) { //选择是否在几何约束后再次进行guided的特征匹配
     for (int i = 0; i < num_threads; ++i) {
       verifiers_.emplace_back(new TwoViewGeometryVerifier(
           options_, cache, &verifier_queue_, &guided_matcher_queue_));

@@ -415,7 +415,7 @@ void InvertedIndex<kDescType, kDescDim, kEmbeddingDim>::Write(
 
 template <typename kDescType, int kDescDim, int kEmbeddingDim>
 void InvertedIndex<kDescType, kDescDim,
-                   kEmbeddingDim>::ComputeWeightsAndNormalizationConstants() {
+                   kEmbeddingDim>::，ComputeWeightsAndNormalizationConstants() {
   std::unordered_set<int> image_ids;
   GetImageIds(&image_ids);
 
@@ -425,7 +425,7 @@ void InvertedIndex<kDescType, kDescDim,
 
   std::unordered_map<int, double> self_similarities(image_ids.size());
   for (const auto& inverted_file : inverted_files_) {
-    inverted_file.ComputeImageSelfSimilarities(&self_similarities);
+    inverted_file.ComputeImageSelfSimilarities(&self_similarities); //倒排表中所有图像自身的相似度得分=该图像在倒排表中的个数×idf权重的平方
   }
 
   normalization_constants_.clear();
@@ -433,7 +433,7 @@ void InvertedIndex<kDescType, kDescDim,
   for (const auto& self_similarity : self_similarities) {
     if (self_similarity.second > 0.0) {
       normalization_constants_[self_similarity.first] =
-          static_cast<float>(1.0 / std::sqrt(self_similarity.second));
+          static_cast<float>(1.0 / std::sqrt(self_similarity.second)); //每个图像的normalization_constants_标准化参数为1/根号（倒排表中该图像出现次数×idf的平方）
     } else {
       normalization_constants_[self_similarity.first] = 0.0f;
     }

@@ -80,7 +80,7 @@ struct FeatureKeypoint {
 typedef Eigen::Matrix<uint8_t, 1, Eigen::Dynamic, Eigen::RowMajor>
     FeatureDescriptor;
 
-struct FeatureMatch {
+struct FeatureMatch { //一对匹配上的特征点
   FeatureMatch()
       : point2D_idx1(kInvalidPoint2DIdx), point2D_idx2(kInvalidPoint2DIdx) {}
   FeatureMatch(const point2D_t point2D_idx1, const point2D_t point2D_idx2)
