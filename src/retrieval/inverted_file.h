@@ -273,7 +273,7 @@ float InvertedFile<kEmbeddingDim>::IDFWeight() const {
 }
 
 template <int kEmbeddingDim>
-void InvertedFile<kEmbeddingDim>::ComputeHammingEmbedding(
+void InvertedFile<kEmbeddingDim>::ComputeHammingEmbedding(//根据该visul word中所有的描述子得到visual word的hamming embedding
     const Eigen::Matrix<float, Eigen::Dynamic, kEmbeddingDim>& descriptors) {
   const int num_descriptors = static_cast<int>(descriptors.rows());
   if (num_descriptors < 2) {

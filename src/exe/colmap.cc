@@ -1904,7 +1904,7 @@ int main(int argc, char** argv) {
   commands.emplace_back("spatial_matcher", &RunSpatialMatcher);
   commands.emplace_back("stereo_fusion", &RunStereoFuser);
   commands.emplace_back("transitive_matcher", &RunTransitiveMatcher);
-  commands.emplace_back("vocab_tree_builder", &RunVocabTreeBuilder);
+  commands.emplace_back("vocab_tree_builder", &RunVocabTreeBuilder);//*****0建立词汇树，计算visual word的hamming embedding
   commands.emplace_back("vocab_tree_matcher", &RunVocabTreeMatcher);//************3词汇树图像匹配，匹配里做了几何验证
   commands.emplace_back("vocab_tree_retriever", &RunVocabTreeRetriever);
 

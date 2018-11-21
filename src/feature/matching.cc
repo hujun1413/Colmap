@@ -625,7 +625,7 @@ SiftFeatureMatcher::SiftFeatureMatcher(const SiftMatchingOptions& options,
   }
 #endif  // CUDA_ENABLED
 
-  if (options_.use_gpu) { //选择是否使用GPU进行特征提取
+  if (options_.use_gpu) { //选择是否使用GPU进行特征匹配
     auto gpu_options = options_;
     matchers_.reserve(gpu_indices.size());
     for (const auto& gpu_index : gpu_indices) {
@@ -826,7 +826,7 @@ void SiftFeatureMatcher::Match(
 
     if (output.two_view_geometry.inlier_matches.size() <
         static_cast<size_t>(options_.min_num_inliers)) {
-      output.two_view_geometry = TwoViewGeometry(); //匹配后进行几何验证
+      output.two_view_geometry = TwoViewGeometry(); //内点太少，设置为UNDEFINED，认为没有几何约束
     }
 
     cache_->WriteMatches(output.image_id1, output.image_id2, output.matches);//写入数据库

@@ -184,7 +184,7 @@ void InvertedIndex<kDescType, kDescDim,
 
 template <typename kDescType, int kDescDim, int kEmbeddingDim>
 void InvertedIndex<kDescType, kDescDim, kEmbeddingDim>::ComputeHammingEmbedding(
-    const DescType& descriptors, const Eigen::VectorXi& word_ids) {
+    const DescType& descriptors, const Eigen::VectorXi& word_ids) {//计算每个visual word的hamming embedding
   CHECK_EQ(descriptors.rows(), word_ids.rows());
   CHECK_EQ(descriptors.cols(), kDescDim);
 
