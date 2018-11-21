@@ -826,10 +826,10 @@ void SiftFeatureMatcher::Match(
 
     if (output.two_view_geometry.inlier_matches.size() <
         static_cast<size_t>(options_.min_num_inliers)) {
-      output.two_view_geometry = TwoViewGeometry();
+      output.two_view_geometry = TwoViewGeometry(); //匹配后进行几何验证
     }
 
-    cache_->WriteMatches(output.image_id1, output.image_id2, output.matches);
+    cache_->WriteMatches(output.image_id1, output.image_id2, output.matches);//写入数据库
     cache_->WriteTwoViewGeometry(output.image_id1, output.image_id2,
                                  output.two_view_geometry);
   }
@@ -1054,7 +1054,7 @@ VocabTreeFeatureMatcher::VocabTreeFeatureMatcher(
   CHECK(match_options_.Check());
 }
 
-void VocabTreeFeatureMatcher::Run() {
+void VocabTreeFeatureMatcher::Run() { 
   PrintHeading1("Vocabulary tree feature matching");
 
   if (!matcher_.Setup()) {

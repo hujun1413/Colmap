@@ -78,7 +78,7 @@ void IterativeLocalRefinement(const IncrementalMapperOptions& options,
                               IncrementalMapper* mapper) {
   auto ba_options = options.LocalBundleAdjustment();
   for (int i = 0; i < options.ba_local_max_refinements; ++i) {
-    const auto report = mapper->AdjustLocalBundle(
+    const auto report = mapper->AdjustLocalBundle( //包含局部BA和过滤外点
         options.Mapper(), ba_options, options.Triangulation(), image_id,
         mapper->GetModifiedPoints3D());
     std::cout << "  => Merged observations: " << report.num_merged_observations
@@ -100,7 +100,7 @@ void IterativeLocalRefinement(const IncrementalMapperOptions& options,
     ba_options.loss_function_type =
         BundleAdjustmentOptions::LossFunctionType::TRIVIAL;
   }
-  mapper->ClearModifiedPoints3D();
+  mapper->ClearModifiedPoints3D(); 
 }
 
 void IterativeGlobalRefinement(const IncrementalMapperOptions& options,
@@ -108,7 +108,7 @@ void IterativeGlobalRefinement(const IncrementalMapperOptions& options,
   PrintHeading1("Retriangulation");
   CompleteAndMergeTracks(options, mapper);
   std::cout << "  => Retriangulated observations: "
-            << mapper->Retriangulate(options.Triangulation()) << std::endl;
+            << mapper->Retriangulate(options.Triangulation()) << std::endl;//全局BA前三角化
 
   for (int i = 0; i < options.ba_global_max_refinements; ++i) {
     const size_t num_observations =
@@ -116,7 +116,7 @@ void IterativeGlobalRefinement(const IncrementalMapperOptions& options,
     size_t num_changed_observations = 0;
     AdjustGlobalBundle(options, mapper);
     num_changed_observations += CompleteAndMergeTracks(options, mapper);
-    num_changed_observations += FilterPoints(options, mapper);
+    num_changed_observations += FilterPoints(options, mapper);//过滤大的重投影误差和小三角化角度的3D点
     const double changed =
         static_cast<double>(num_changed_observations) / num_observations;
     std::cout << StringPrintf("  => Changed observations: %.6f", changed)
@@ -126,7 +126,7 @@ void IterativeGlobalRefinement(const IncrementalMapperOptions& options,
     }
   }
 
-  FilterImages(options, mapper);
+  FilterImages(options, mapper);//过滤内点为0和内参值错误的图像
 }
 
 void ExtractColors(const std::string& image_path, const image_t image_id,
@@ -302,13 +302,13 @@ IncrementalMapperController::IncrementalMapperController(
   RegisterCallback(LAST_IMAGE_REG_CALLBACK);
 }
 
-void IncrementalMapperController::Run() {
-  if (!LoadDatabase()) {
+void IncrementalMapperController::Run() {  //Controller是一个线程
+  if (!LoadDatabase()) {//*******Load相机和图像，构建场景图
     return;
   }
 
   IncrementalMapper::Options init_mapper_options = options_->Mapper();
-  Reconstruct(init_mapper_options);
+  Reconstruct(init_mapper_options);//*******增量式重建
 
   const size_t kNumInitRelaxations = 2;
   for (size_t i = 0; i < kNumInitRelaxations; ++i) {
@@ -341,7 +341,7 @@ bool IncrementalMapperController::LoadDatabase() {
   timer.Start();
   const size_t min_num_matches = static_cast<size_t>(options_->min_num_matches);
   database_cache_.Load(database, min_num_matches, options_->ignore_watermarks,
-                       options_->image_names);
+                       options_->image_names);//*******Load相机和图像，构建场景图
   std::cout << std::endl;
   timer.PrintMinutes();
 
@@ -365,7 +365,7 @@ void IncrementalMapperController::Reconstruct(
   // Main loop
   //////////////////////////////////////////////////////////////////////////////
 
-  IncrementalMapper mapper(&database_cache_);
+  IncrementalMapper mapper(&database_cache_); 
 
   // Is there a sub-model before we start the reconstruction? I.e. the user
   // has imported an existing reconstruction.
@@ -396,7 +396,7 @@ void IncrementalMapperController::Reconstruct(
     ////////////////////////////////////////////////////////////////////////////
     // Register initial pair
     ////////////////////////////////////////////////////////////////////////////
-
+    //*********初始化
     if (reconstruction.NumRegImages() == 0) {
       image_t image_id1 = static_cast<image_t>(options_->init_image_id1);
       image_t image_id2 = static_cast<image_t>(options_->init_image_id2);
@@ -468,7 +468,7 @@ void IncrementalMapperController::Reconstruct(
     ////////////////////////////////////////////////////////////////////////////
     // Incremental mapping
     ////////////////////////////////////////////////////////////////////////////
-
+    //*********增量式重建
     size_t snapshot_prev_num_reg_images = reconstruction.NumRegImages();
     size_t ba_prev_num_reg_images = reconstruction.NumRegImages();
     size_t ba_prev_num_points = reconstruction.NumPoints3D();
@@ -484,7 +484,7 @@ void IncrementalMapperController::Reconstruct(
       reg_next_success = false;
 
       const std::vector<image_t> next_images =
-          mapper.FindNextImages(options_->Mapper());
+          mapper.FindNextImages(options_->Mapper());  //*****下一帧图像选取策略
 
       if (next_images.empty()) {
         break;
@@ -503,11 +503,11 @@ void IncrementalMapperController::Reconstruct(
                   << std::endl;
 
         reg_next_success =
-            mapper.RegisterNextImage(options_->Mapper(), next_image_id);
+            mapper.RegisterNextImage(options_->Mapper(), next_image_id);//******图像注册
 
-        if (reg_next_success) {
-          TriangulateImage(*options_, next_image, &mapper);
-          IterativeLocalRefinement(*options_, next_image_id, &mapper);
+        if (reg_next_success) { 
+          TriangulateImage(*options_, next_image, &mapper);  //*****三角化
+          IterativeLocalRefinement(*options_, next_image_id, &mapper);  //*****迭代局部BA和过滤外点
 
           if (reconstruction.NumRegImages() >=
                   options_->ba_global_images_ratio * ba_prev_num_reg_images ||
@@ -517,7 +517,7 @@ void IncrementalMapperController::Reconstruct(
                   options_->ba_global_points_ratio * ba_prev_num_points ||
               reconstruction.NumPoints3D() >=
                   options_->ba_global_points_freq + ba_prev_num_points) {
-            IterativeGlobalRefinement(*options_, &mapper);
+            IterativeGlobalRefinement(*options_, &mapper);//全局BA
             ba_prev_num_points = reconstruction.NumPoints3D();
             ba_prev_num_reg_images = reconstruction.NumRegImages();
           }

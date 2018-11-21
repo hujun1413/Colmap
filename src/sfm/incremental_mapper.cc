@@ -623,7 +623,7 @@ IncrementalMapper::AdjustLocalBundle(
   // there are no outlier points in the model. This results in duplicate work as
   // many of the provided 3D points may also be contained in the adjusted
   // images, but the filtering is not a bottleneck at this point.
-  std::unordered_set<image_t> filter_image_ids;
+  std::unordered_set<image_t> filter_image_ids;//在局部BA之后过滤外点，迭代多次
   filter_image_ids.insert(image_id);
   filter_image_ids.insert(local_bundle.begin(), local_bundle.end());
   report.num_filtered_observations = reconstruction_->FilterPoints3DInImages(

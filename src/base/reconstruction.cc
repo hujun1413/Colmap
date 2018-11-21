@@ -675,7 +675,7 @@ size_t Reconstruction::FilterObservationsWithNegativeDepth() {
   return num_filtered;
 }
 
-std::vector<image_t> Reconstruction::FilterImages(
+std::vector<image_t> Reconstruction::FilterImages(//过滤内点数为0和内参值错误的图像
     const double min_focal_length_ratio, const double max_focal_length_ratio,
     const double max_extra_param) {
   std::vector<image_t> filtered_image_ids;

@@ -452,6 +452,16 @@ class VocabTreeFeatureMatcher : public Thread {
                           const std::string& database_path);
 
  private:
+
+/**
+    在线程中执行基于词汇树的特征匹配。
+
+    预训练好的词汇树字典可以在[这里]( https://demuc.de/colmap/)下载
+
+    @param  无
+
+    @return  无
+*/
   void Run() override;
 
   const VocabTreeMatchingOptions options_;

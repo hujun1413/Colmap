@@ -793,7 +793,7 @@ int RunMapper(int argc, char** argv) {
 
   IncrementalMapperController mapper(options.mapper.get(), *options.image_path,
                                      *options.database_path,
-                                     &reconstruction_manager);
+                                     &reconstruction_manager);//*****线程开始增量式重建
 
   // In case a new reconstruction is started, write results of individual sub-
   // models to as their reconstruction finishes instead of writing all results
@@ -1879,15 +1879,15 @@ int main(int argc, char** argv) {
   commands.emplace_back("color_extractor", &RunColorExtractor);
   commands.emplace_back("database_creator", &RunDatabaseCreator);
   commands.emplace_back("delaunay_mesher", &RunDelaunayMesher);
-  commands.emplace_back("exhaustive_matcher", &RunExhaustiveMatcher);
-  commands.emplace_back("feature_extractor", &RunFeatureExtractor);
-  commands.emplace_back("feature_importer", &RunFeatureImporter);
+  commands.emplace_back("exhaustive_matcher", &RunExhaustiveMatcher);//*****3穷举图像匹配
+  commands.emplace_back("feature_extractor", &RunFeatureExtractor); //*****2特征提取
+  commands.emplace_back("feature_importer", &RunFeatureImporter); 
   commands.emplace_back("hierarchical_mapper", &RunHierarchicalMapper);
-  commands.emplace_back("image_deleter", &RunImageDeleter);
+  commands.emplace_back("image_deleter", &RunImageDeleter); //*****1特征检测
   commands.emplace_back("image_rectifier", &RunImageRectifier);
-  commands.emplace_back("image_registrator", &RunImageRegistrator);
+  commands.emplace_back("image_registrator", &RunImageRegistrator); //*******图像注册？跑了完整sfm
   commands.emplace_back("image_undistorter", &RunImageUndistorter);
-  commands.emplace_back("mapper", &RunMapper);
+  commands.emplace_back("mapper", &RunMapper); //******4增量式重建
   commands.emplace_back("matches_importer", &RunMatchesImporter);
   commands.emplace_back("model_aligner", &RunModelAligner);
   commands.emplace_back("model_analyzer", &RunModelAnalyzer);
@@ -1905,7 +1905,7 @@ int main(int argc, char** argv) {
   commands.emplace_back("stereo_fusion", &RunStereoFuser);
   commands.emplace_back("transitive_matcher", &RunTransitiveMatcher);
   commands.emplace_back("vocab_tree_builder", &RunVocabTreeBuilder);
-  commands.emplace_back("vocab_tree_matcher", &RunVocabTreeMatcher);
+  commands.emplace_back("vocab_tree_matcher", &RunVocabTreeMatcher);//************3词汇树图像匹配，匹配里做了几何验证
   commands.emplace_back("vocab_tree_retriever", &RunVocabTreeRetriever);
 
   if (argc == 1) {
