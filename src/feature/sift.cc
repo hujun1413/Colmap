@@ -98,9 +98,9 @@ Eigen::MatrixXi ComputeSiftDistanceMatrix(
       if (guided_filter != nullptr &&
           guided_filter((*keypoints1)[i1].x, (*keypoints1)[i1].y,
                         (*keypoints2)[i2].x, (*keypoints2)[i2].y)) {
-        dists(i1, i2) = 0;
+        dists(i1, i2) = 0; //相似度为0
       } else {
-        dists(i1, i2) = descriptors1_int.row(i1).dot(descriptors2_int.row(i2));
+        dists(i1, i2) = descriptors1_int.row(i1).dot(descriptors2_int.row(i2)); //距离为两个描述子的内积，其实就是相似度，内积越大越相似
       }
     }
   }
@@ -141,7 +141,7 @@ size_t FindBestMatchesOneWay(const Eigen::MatrixXi& dists,
         std::acos(std::min(kDistNorm * best_dist, 1.0f));
 
     // Check if match distance passes threshold.
-    if (best_dist_normed > max_distance) {
+    if (best_dist_normed > max_distance) {//余弦角度大于阈值，表示没匹配上
       continue;
     }
 
