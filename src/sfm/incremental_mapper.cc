@@ -196,7 +196,7 @@ bool IncrementalMapper::FindInitialImagePair(const Options& options,
 }
 
 std::vector<image_t> IncrementalMapper::FindNextImages(const Options& options) {
-  CHECK_NOTNULL(reconstruction_);
+  CHECK_NOTNULL(reconstruction_);//选择最大可见点数，最大可见点数/内点数，Point3DVisibilityScore
   CHECK(options.Check());
 
   std::function<float(const Image&)> rank_image_func;
@@ -455,7 +455,7 @@ bool IncrementalMapper::RegisterNextImage(const Options& options,
       refined_cameras_.erase(image.CameraId());
       camera.SetParams(database_cache_->Camera(image.CameraId()).Params());
       abs_pose_options.estimate_focal_length = !camera.HasPriorFocalLength();
-      abs_pose_refinement_options.refine_focal_length = true;
+      abs_pose_refinement_options.refine_focal_length = true; //需要优化相机参数
       abs_pose_refinement_options.refine_extra_params = true;
     } else {
       abs_pose_options.estimate_focal_length = false;
@@ -703,7 +703,7 @@ bool IncrementalMapper::AdjustParallelGlobalBundle(
   return true;
 }
 
-size_t IncrementalMapper::FilterImages(const Options& options) {
+size_t IncrementalMapper::FilterImages(const Options& options) { //过滤内点数为0和内参值错误的图像
   CHECK_NOTNULL(reconstruction_);
   CHECK(options.Check());
 
@@ -731,7 +731,7 @@ size_t IncrementalMapper::FilterPoints(const Options& options) {
   CHECK_NOTNULL(reconstruction_);
   CHECK(options.Check());
   return reconstruction_->FilterAllPoints3D(options.filter_max_reproj_error,
-                                            options.filter_min_tri_angle);
+                                            options.filter_min_tri_angle); //过滤有大的重投影误差和小的三角化角度的3D点
 }
 
 const Reconstruction& IncrementalMapper::GetReconstruction() const {

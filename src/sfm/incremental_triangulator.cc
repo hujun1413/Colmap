@@ -59,7 +59,7 @@ IncrementalTriangulator::IncrementalTriangulator(
       reconstruction_(reconstruction) {}
 
 size_t IncrementalTriangulator::TriangulateImage(const Options& options,
-                                                 const image_t image_id) {
+                                                 const image_t image_id) {//对新注册的图像进行三角化
   CHECK(options.Check());
 
   size_t num_tris = 0;

@@ -250,7 +250,7 @@ bool RefineAbsolutePose(const AbsolutePoseRefinementOptions& options,
 
     // Camera parameterization.
     if (!options.refine_focal_length && !options.refine_extra_params) {
-      problem.SetParameterBlockConstant(camera->ParamsData());
+      problem.SetParameterBlockConstant(camera->ParamsData()); //不需要重新优化参数，则设置为之前优化过的值
     } else {
       // Always set the principal point as fixed.
       std::vector<int> camera_params_const;

@@ -1868,7 +1868,7 @@ void Reconstruction::WritePoints3DBinary(const std::string& path) const {
   }
 }
 
-void Reconstruction::SetObservationAsTriangulated(
+void Reconstruction::SetObservationAsTriangulated( //将观测点设置为三角化点，意思是找到了对应的3D点
     const image_t image_id, const point2D_t point2D_idx,
     const bool is_continued_point3D) {
   if (correspondence_graph_ == nullptr) {

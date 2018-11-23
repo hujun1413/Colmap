@@ -167,7 +167,7 @@ size_t FilterPoints(const IncrementalMapperOptions& options,
 }
 
 size_t FilterImages(const IncrementalMapperOptions& options,
-                    IncrementalMapper* mapper) {
+                    IncrementalMapper* mapper) { //过滤内点数为0和内参值错误的图像
   const size_t num_filtered_images = mapper->FilterImages(options.Mapper());
   std::cout << "  => Filtered images: " << num_filtered_images << std::endl;
   return num_filtered_images;
@@ -441,8 +441,8 @@ void IncrementalMapperController::Reconstruct(
       }
 
       AdjustGlobalBundle(*options_, &mapper);
-      FilterPoints(*options_, &mapper);
-      FilterImages(*options_, &mapper);
+      FilterPoints(*options_, &mapper); //过滤有大的重投影误差和小的三角化角度的3D点
+      FilterImages(*options_, &mapper); //过滤内点数为0和内参值错误的图像
 
       // Initial image pair failed to register.
       if (reconstruction.NumRegImages() == 0 ||
