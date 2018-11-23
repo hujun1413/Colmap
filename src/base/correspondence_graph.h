@@ -134,14 +134,14 @@ class CorrespondenceGraph {
  private:
   struct Image {
     // Number of 2D points with at least one correspondence to another image.
-    point2D_t num_observations = 0;
+    point2D_t num_observations = 0;//一张图中 与其他图像中的点有匹配 的点的数量
 
     // Total number of correspondences to other images. This measure is useful
     // to find a good initial pair, that is connected to many images.
-    point2D_t num_correspondences = 0;
+    point2D_t num_correspondences = 0;  //一张图中所有点的匹配点的数量之和，代表这张图中的所有匹配点对的数量
 
     // Correspondences to other images per image point.
-    std::vector<std::vector<Correspondence>> corrs;
+    std::vector<std::vector<Correspondence>> corrs; //图像中所有点对应的匹配点列表（匹配点用另一张图<image_id, point_id>表示），一个点可以对应多张图中的匹配点
   };
 
   struct ImagePair {

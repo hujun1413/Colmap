@@ -312,7 +312,7 @@ void IncrementalMapperController::Run() {  //Controller是一个线程
 
   const size_t kNumInitRelaxations = 2;
   for (size_t i = 0; i < kNumInitRelaxations; ++i) {
-    if (reconstruction_manager_->Size() > 0 || IsStopped()) {
+    if (reconstruction_manager_->Size() > 0 || IsStopped()) {  //reconstruction_manager_的个数不为0说明用UI界面添加了一个Reconstruct
       break;
     }
 
@@ -383,7 +383,7 @@ void IncrementalMapperController::Reconstruct(
 
     size_t reconstruction_idx;
     if (!initial_reconstruction_given || num_trials > 0) {
-      reconstruction_idx = reconstruction_manager_->Add();
+      reconstruction_idx = reconstruction_manager_->Add();//没有初始化重建，所以新建一个
     } else {
       reconstruction_idx = 0;
     }

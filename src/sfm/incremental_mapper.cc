@@ -837,10 +837,10 @@ std::vector<image_t> IncrementalMapper::FindSecondInitialImage(
   for (point2D_t point2D_idx = 0; point2D_idx < image1.NumPoints2D();
        ++point2D_idx) {
     for (const auto& corr :
-         correspondence_graph.FindCorrespondences(image_id1, point2D_idx)) {
+         correspondence_graph.FindCorrespondences(image_id1, point2D_idx)) {//和第一张图像中所有特征点的 匹配点对表
       if (num_registrations_.count(corr.image_id) == 0 ||
           num_registrations_.at(corr.image_id) == 0) {
-        num_correspondences[corr.image_id] += 1;
+        num_correspondences[corr.image_id] += 1;//匹配点所在的图像的num_correspondences加1
       }
     }
   }
@@ -859,7 +859,7 @@ std::vector<image_t> IncrementalMapper::FindSecondInitialImage(
   std::vector<ImageInfo> image_infos;
   image_infos.reserve(reconstruction_->NumImages());
   for (const auto elem : num_correspondences) {
-    if (elem.second >= init_min_num_inliers) {
+    if (elem.second >= init_min_num_inliers) {//图像的num_correspondences大于最小内点数
       const class Image& image = reconstruction_->Image(elem.first);
       const class Camera& camera = reconstruction_->Camera(image.CameraId());
       ImageInfo image_info;

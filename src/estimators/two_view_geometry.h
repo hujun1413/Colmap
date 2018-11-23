@@ -242,7 +242,7 @@ struct TwoViewGeometry {
   FeatureMatches inlier_matches;
 
   // Median triangulation angle.
-  double tri_angle;
+  double tri_angle; //图像对的三角化角度的中位数
 };
 
 }  // namespace colmap
