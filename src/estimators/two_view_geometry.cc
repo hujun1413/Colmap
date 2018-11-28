@@ -154,7 +154,7 @@ void TwoViewGeometry::EstimateMultiple(
   } else if (two_view_geometries.size() == 1) {
     *this = two_view_geometries[0];
   } else {
-    config = ConfigurationType::MULTIPLE;
+    config = ConfigurationType::MULTIPLE; //得到多个双视几何的模型，标记场景图的边为MULTIPLE
 
     for (const auto& two_view_geometry : two_view_geometries) {
       inlier_matches.insert(inlier_matches.end(),

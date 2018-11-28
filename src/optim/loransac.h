@@ -167,7 +167,7 @@ LORANSAC<Estimator, LocalEstimator, SupportMeasurer, Sampler>::Estimate(
           }
 
           const std::vector<typename LocalEstimator::M_t> local_models =
-              local_estimator.Estimate(X_inlier, Y_inlier);
+              local_estimator.Estimate(X_inlier, Y_inlier);//对RANSAC得到的内点再进行一次局部的估计
 
           for (const auto& local_model : local_models) {
             local_estimator.Residuals(X, Y, local_model, &residuals);
@@ -177,7 +177,7 @@ LORANSAC<Estimator, LocalEstimator, SupportMeasurer, Sampler>::Estimate(
                 support_measurer.Evaluate(residuals, max_residual);
 
             // Check if non-locally optimized model is better.
-            if (support_measurer.Compare(local_support, best_support)) {
+            if (support_measurer.Compare(local_support, best_support)) {//局部估计比这次RANSAC的结果还要好，更新最好模型为这个局部估计
               best_support = local_support;
               best_model = local_model;
               best_model_is_local = true;
@@ -220,7 +220,7 @@ LORANSAC<Estimator, LocalEstimator, SupportMeasurer, Sampler>::Estimate(
 
   CHECK_EQ(residuals.size(), X.size());
 
-  report.inlier_mask.resize(num_samples);
+  report.inlier_mask.resize(num_samples);//inlier mask的生成，被证明可以提高RANSAC的效率
   for (size_t i = 0; i < residuals.size(); ++i) {
     if (residuals[i] <= max_residual) {
       report.inlier_mask[i] = true;
