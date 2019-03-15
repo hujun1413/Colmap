@@ -566,6 +566,7 @@ IncrementalMapper::AdjustLocalBundle(
 
   // Find images that have most 3D points with given image in common.
   const std::vector<image_t> local_bundle = FindLocalBundle(options, image_id);
+  //找到和当前图像观测到相同3D点的图像
 
   // Do the bundle adjustment only if there is any connected images.
   if (local_bundle.size() > 0) {
@@ -581,7 +582,7 @@ IncrementalMapper::AdjustLocalBundle(
       ba_config.SetConstantTvec(image_id, {0});
     } else if (local_bundle.size() > 1) {
       ba_config.SetConstantPose(local_bundle[local_bundle.size() - 1]);
-      ba_config.SetConstantTvec(local_bundle[local_bundle.size() - 2], {0});
+      ba_config.SetConstantTvec(local_bundle[local_bundle.size() - 2], {0});//将local_bundle的最后一个图像设置为固定的
     }
 
     // Make sure, we refine all new and short-track 3D points, no matter if
@@ -594,7 +595,7 @@ IncrementalMapper::AdjustLocalBundle(
       const Point3D& point3D = reconstruction_->Point3D(point3D_id);
       const size_t kMaxTrackLength = 15;
       if (!point3D.HasError() || point3D.Track().Length() <= kMaxTrackLength) {
-        ba_config.AddVariablePoint(point3D_id);
+        ba_config.AddVariablePoint(point3D_id);//当point3D的Error为-1时，point3D.HasError()返回false，代表这个3D点是新的不稳定的，需要进行优化
         variable_point3D_ids.insert(point3D_id);
       }
     }
@@ -917,7 +918,7 @@ std::vector<image_t> IncrementalMapper::FindLocalBundle(
       const Point3D& point3D = reconstruction_->Point3D(point2D.Point3DId());
       for (const TrackElement& track_el : point3D.Track().Elements()) {
         if (track_el.image_id != image_id) {
-          shared_observations[track_el.image_id] += 1;
+          shared_observations[track_el.image_id] += 1;//找到和当前图像有观测到相同3D点的图像，记录共同观测到的3D点的数量
         }
       }
     }
